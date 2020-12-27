@@ -24,7 +24,7 @@ class Unit(models.Model):
         return self.title
 
 # costmodel 1st level breakdown
-# should cost = material cost + manufacturing cost + overhead cost + profit cost
+# should cost = material cost + manufacturing cost + overhead cost + special cost + profit cost
 class CostBreakdown(models.Model):
     """
     Model representing a cost breakdown
@@ -32,8 +32,12 @@ class CostBreakdown(models.Model):
 
     title = models.CharField(max_length=120, help_text='Costmodel Title') # costmodel title
     part_number = models.CharField(max_length=120, help_text='Part Number') # customer or manufacturer part number
-    supplier = models.CharField(max_length=120, help_text='Supplier') # company or supplier for the part number
-    overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 10 for 10% Overhead')
+    company = models.CharField(max_length=120, help_text='Company') # company or supplier for the part number
+    overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 10 for 10% Overhead') # will connect to class overhead
+    packaging = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    freight = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    customs = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    tooling = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     profit = models.DecimalField('Profit (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 5 for 5% Profit')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -56,7 +60,7 @@ class CostBreakdown(models.Model):
             
     def material_cost(self, *args, **kwargs):
         """
-        Returns total material direct cost
+        Returns total material cost
         """
         result = 0
         for mb in self.mb_list:
@@ -66,7 +70,7 @@ class CostBreakdown(models.Model):
 
     def manufacturing_cost(self, *args, **kwargs): 
         """
-        Returns total manufacturing direct cost
+        Returns total manufacturing cost
         """
         result = 0
         for gb in self.gb_list:
@@ -74,9 +78,9 @@ class CostBreakdown(models.Model):
 
         return result
 
-    def direct_cost(self, *args, **kwargs): 
+    def production_cost(self, *args, **kwargs): 
         """
-        Returns the direct cost of the breakdown
+        Returns the production cost of the breakdown
         """
         return self.material_cost() + self.manufacturing_cost()
 
@@ -84,25 +88,31 @@ class CostBreakdown(models.Model):
         """
         Returns the overhead cost
         """
-        return round((self.overhead / 100) * self.direct_cost(), 2)
+        return round((self.overhead / 100) * self.production_cost(), 2)
+
+    def special_cost(self, *args, **kwargs): 
+        """
+        Returns the special cost of the breakdown
+        """
+        return round(self.packaging + self.freight + self.customs + self.tooling, 2)  
 
     def profit_cost(self, *args, **kwargs):
         """
         Returns the profit
         """
-        return round((self.profit / 100) * self.direct_cost(), 2)
+        return round((self.profit / 100) * self.production_cost(), 2)
 
     def indirect_cost(self, *args, **kwargs):
         """
-        Returns the indirect cost (overhead + profit) of the breakdown
+        Returns the indirect cost (overhead + specail + profit) of the breakdown
         """
-        return self.overhead_cost() + self.profit_cost()
+        return self.overhead_cost() + self.special_cost() + self.profit_cost()
 
     def total_cost(self, *args, **kwargs):
         """
         Returns the total cost of the cost breakdown 
         """
-        return self.direct_cost() + self.indirect_cost()
+        return self.production_cost() + self.indirect_cost()
     #???
     def get_absolute_url(self):
         """
@@ -153,7 +163,7 @@ class MaterialBreakdown(models.Model):
 
     def materialtotal(self):
         """
-        Returns subtotal of a single material direct cost
+        Returns subtotal of a single material cost
         """
         return round(self.material_net_cost + self.material_scrap_cost + self.material_overhead_cost, 2)
 
@@ -174,7 +184,7 @@ class ManufacturingBreakdown(models.Model):
     Model representing a manufacturing breakdown
     """
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
-    step = models.CharField(max_length=120, help_text='Manufacturing Step') 
+    process_step = models.CharField(max_length=120, help_text='Manufacturing Process Step') 
     labor_quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1.0)
     labor_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     machine_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.0, help_text='Machine hourly rate')
@@ -187,7 +197,7 @@ class ManufacturingBreakdown(models.Model):
     class Meta:
        verbose_name = 'manufacturing breakdown'
        verbose_name_plural = 'manufacturing breakdowns'
-       ordering = ['costbreakdown', 'step'] 
+       ordering = ['costbreakdown', 'process_step'] 
 
     def labor_net_cost(self):
         """
@@ -221,7 +231,7 @@ class ManufacturingBreakdown(models.Model):
 
     def manufacturingtotal(self):
         """ 
-        Return manufacturing direct cost total
+        Return manufacturing cost total
         """
 
         return round(self.manufacturing_net_cost + self.manufacturing_scrap_cost + self.setup + self.manufacturing_overhead_cost, 2)
@@ -236,5 +246,6 @@ class ManufacturingBreakdown(models.Model):
         """
         Returns string repsentation of the manufacturingbreakdown model
         """
-        return '{} Manufacturing Breakdown'.format(self.step)
+        return '{} Manufacturing Breakdown'.format(self.process_step)
+
 
