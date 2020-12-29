@@ -1,5 +1,5 @@
 from django.contrib import admin
-from costmodel.models import Unit, CostBreakdown, MaterialBreakdown, ManufacturingBreakdown
+from breakdowns.models import Unit, CostBreakdown, MaterialBreakdown, ManufacturingBreakdown
 
 # Register your models here.
 

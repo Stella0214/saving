@@ -1,7 +1,7 @@
-from django.urls import path, reverse_lazy
+from django.urls import path
 from . import views
 
-app_name='costmodel'
+app_name='breakdowns'
 urlpatterns = [
     
     # User Cost Breakdown List URL
@@ -9,4 +9,3 @@ urlpatterns = [
 
 ]
 
-# We use reverse_lazy in urls.py to delay looking up the view until all the paths are defined

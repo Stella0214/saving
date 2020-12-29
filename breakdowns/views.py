@@ -10,10 +10,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.conf import settings
 from django.core import serializers
 from datetime import date
-import openpyxl
-from xlrd import open_workbook
-from xlwt import Workbook, easyxf, Formula
-from xlutils.copy import copy
 from .models import Unit, CostBreakdown, MaterialBreakdown, ManufacturingBreakdown
 
 # Create your views here.

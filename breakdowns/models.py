@@ -247,5 +247,3 @@ class ManufacturingBreakdown(models.Model):
         Returns string repsentation of the manufacturingbreakdown model
         """
         return '{} Manufacturing Breakdown'.format(self.process_step)
-
-
