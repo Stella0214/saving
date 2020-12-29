@@ -1,0 +1,10 @@
+# To activate this run
+#
+# pip3 install -r requirements.txt
+#
+Django>=3.0.1
+django-extensions>=2.2.5
+django-crispy-forms>=1.8.1
+django-filter>=2.2.0
+djangorestframework>=3.10.3
+Markdown>=3.0.1

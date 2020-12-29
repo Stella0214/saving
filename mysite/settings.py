@@ -15,6 +15,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Used for a default title
+APP_NAME = '省钱'   # Add
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -36,9 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+
+    # Extensions - installed with pip / requirements.txt
+    'django_extensions',
+    'crispy_forms',
+    'rest_framework',
     'home',
     'breakdowns',
 ]
+
+# When we get to crispy forms :)
+CRISPY_TEMPLATE_PACK = 'bootstrap3'  # Add
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'home.context_processors.settings',      # Add
             ],
         },
     },
@@ -119,3 +132,48 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Add the settings below
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+AUTHENTICATION_BACKENDS = (
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+# Don't set default LOGIN_URL - let django.contrib.auth set it when it is loaded
+# LOGIN_URL = '/accounts/login'
+
+# https://coderwall.com/p/uzhyca/quickly-setup-sql-query-logging-django
+# https://stackoverflow.com/questions/12027545/determine-if-django-is-running-under-the-development-server
+
+'''  # Leave off for now
+import sys
+if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
+    print('Running locally')
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            }
+        },
+        'loggers': {
+            'django.db.backends': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+            },
+        }
+    }
+'''

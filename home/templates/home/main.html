@@ -1,12 +1,20 @@
 
+{% block content %}
+{% load static %}
+
 <html>
 <head>
-    <title>成本模型</title>
+    <title>{{ settings.APP_NAME }}</title>
 </head>
 <body>
-    <h1>欢迎来到成本模型网站</h1>
+    <h1>欢迎来到{{ settings.APP_NAME }}</h1>
     <p>
-    成本模型为你省钱
+    为你省钱
     </p>
+    <div>
+    <img src = "static/home/images/background.jpg"
+    class="img-responsive">
+    </div>
 </body>
 </html>
+{% endblock %}
