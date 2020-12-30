@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
+    'django.contrib.humanize', #Add
 
     # Extensions - installed with pip / requirements.txt
-    'django_extensions',
+    'django_extensions', 
     'crispy_forms',
     'rest_framework',
     'home',
@@ -117,15 +117,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'zh-hans'
+LANGUAGE_CODE = 'zh-hans' #Change
 
-TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = 'Asia/Shanghai' #Change
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = False #Change
 
 
 # Static files (CSS, JavaScript, Images)
@@ -141,39 +141,3 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
-
-AUTHENTICATION_BACKENDS = (
-
-    'django.contrib.auth.backends.ModelBackend',
-)
-
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/'
-
-# Don't set default LOGIN_URL - let django.contrib.auth set it when it is loaded
-# LOGIN_URL = '/accounts/login'
-
-# https://coderwall.com/p/uzhyca/quickly-setup-sql-query-logging-django
-# https://stackoverflow.com/questions/12027545/determine-if-django-is-running-under-the-development-server
-
-'''  # Leave off for now
-import sys
-if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
-    print('Running locally')
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-            }
-        },
-        'loggers': {
-            'django.db.backends': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-            },
-        }
-    }
-'''

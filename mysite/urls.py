@@ -24,10 +24,9 @@ from django.views.static import serve
 
 urlpatterns = [
     
-    path('', include('home.urls')), # homepage
-    path('admin/', admin.site.urls), # Keep
-    path('accounts/', include('django.contrib.auth.urls')),  # Keep
-    path('breakdowns/', include('breakdowns.urls')), # breakdowns / costmodels
+    path('', include('home.urls')), # Add
+    path('admin/', admin.site.urls), 
+    path('breakdowns/', include('breakdowns.urls')), # Add
 ]
 
 # Serve the static HTML
