@@ -39,7 +39,7 @@ urlpatterns += [
         ),
 ]
 
-# Serve the favicon - Keep for later
+# Serve the favicon
 urlpatterns += [
     path('favicon.ico', serve, {
             'path': 'favicon.ico',

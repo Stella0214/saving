@@ -5,7 +5,7 @@ app_name='breakdowns'
 urlpatterns = [
         
     # User Cost Breakdown List URL
-    re_path(r'^my-breakdowns/$', views.MyBreakdownList.as_view(), name='my_breakdown_list'),
+    re_path(r'my-breakdowns/', views.MyBreakdownList.as_view(), name='my_breakdown_list'),
 
 ]
 
