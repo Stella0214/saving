@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.conf import settings
+from django.shortcuts import redirect
 
 # Create your views here.
 
@@ -14,3 +15,15 @@ class HomeView(View):
             'islocal': islocal
         }
         return render(request, 'home/main.html', context)
+
+def login(request):
+    pass
+    return render(request, 'home/login.html')
+
+def register(request):
+    pass
+    return render(request, 'home/register.html')
+
+def logout(request):
+    pass
+    return redirect("/home/")
