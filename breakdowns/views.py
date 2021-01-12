@@ -1,33 +1,28 @@
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse
-from django.views import generic
-from django.urls import reverse_lazy, reverse
-from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
-from django.conf import settings
-from django.core import serializers
-from datetime import date
-from .models import Unit, CostBreakdown, MaterialBreakdown, ManufacturingBreakdown
+from django.shortcuts import render
+from django.shortcuts import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+# Create your views here.
+import json
+from breakdowns import models
+from django.shortcuts import get_object_or_404
 
-# All My Cost breakdowns list
-class MyBreakdownList(LoginRequiredMixin, generic.ListView):
-    model = CostBreakdown
-    template_name = 'breakdowns/my_breakdown_list.html'
-    context_object_name = 'cost_breakdown_list'
-    login_url = 'breakdowns:my_breakdown_list'
-    redirect_field_name = None
+def index(request):
 
-    def test_func(self, *args, **kwargs):
-        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk']) #???
-        return cost_breakdown.created_by.id == self.request.user.id
+    breakdowns = models.CostBreakdown.objects.all()
+    return render(request, 'breakdowns/index.html', locals())
 
-    def get_queryset(self, *args, **kwargs):
-        return CostBreakdown.objects.filter(created_by__pk=self.request.user.id)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(MyBreakdownList, self).get_context_data(*args, **kwargs)
-        context['page_name'] = 'my cost breakdowns'
-        return context
+def dashboard(request):
+    pass
+    return render(request, 'breakdowns/dashboard.html', locals())
+
+
+def detail(request, costbreakdown_id):
+    """
+    以显示服务器类型资产详细为例，安全设备、存储设备、网络设备等参照此例。
+    :param request:
+    :param asset_id:
+    :return:
+    """
+    breakdown = get_object_or_404(models.CostBreakdown, id=costbreakdown_id)
+    return render(request, 'breakdowns/detail.html', locals())

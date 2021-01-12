@@ -1,11 +1,12 @@
-from django.urls import path, re_path
-from . import views
+from django.urls import path
+from breakdowns import views
 
-app_name='breakdowns'
+app_name = 'breakdowns'
+
 urlpatterns = [
-        
-    # User Cost Breakdown List URL
-    re_path(r'my-breakdowns/', views.MyBreakdownList.as_view(), name='my_breakdown_list'),
-
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('index/', views.index, name='index'),
+    path('detail/<int:asset_id>/', views.detail, name="detail"),
+    path('', views.dashboard),   
 ]
 
