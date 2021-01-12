@@ -1,5 +1,4 @@
 
-{% block content %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -8,9 +7,10 @@
     <title>{{ settings.APP_NAME }}</title>
 </head>
 <body>
-    <h1>欢迎来到{{ settings.APP_NAME }}</h1>
+    <h1>{{ request.session.user_name }}! 欢迎来到{{ settings.APP_NAME }}</h1>
     <p>
     为你省钱
+    <a href="/logout/">登出</a>
     </p>
     <div>
     <img src = "static/home/images/background.jpg"
@@ -18,4 +18,4 @@
     </div>
 </body>
 </html>
-{% endblock %}
+

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'home',
+    'captcha',
     'breakdowns',
 ]
 
@@ -125,7 +126,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False #Change ???
+USE_TZ = False #Change
 
 
 # Static files (CSS, JavaScript, Images)

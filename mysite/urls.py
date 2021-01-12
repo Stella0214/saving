@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('home.urls')), # Add
     path('admin/', admin.site.urls), 
     path('breakdowns/', include('breakdowns.urls')), # Add
+    path('captcha/', include('captcha.urls')) 
 ]
 
 # Serve the static HTML
