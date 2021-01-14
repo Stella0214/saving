@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 def index(request):
 
     breakdowns = models.CostBreakdown.objects.all()
+    
     return render(request, 'breakdowns/index.html', locals())
 
 

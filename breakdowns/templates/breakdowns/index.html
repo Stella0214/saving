@@ -2,7 +2,9 @@
 {% load static %}
 {% block title %}成本模型总表{% endblock %}
 
-{% block css %}{% endblock %}
+{% block css %}
+ <link rel="stylesheet" href="{% static 'adminlet-2.4.10/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
 
 {% block breadcrumb %}
 <!-- Content Header (Page header) -->
@@ -19,8 +21,76 @@
 {% endblock %}
 
 {% block content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+
+        <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">成本模型总表</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <table id="breakdowns_table" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+              <th>序号</th>
+              <th>公司</th>
+              <th>名称</th>
+              <th>PN</th>
+              <th>管理费</th>
+              <th>利润</th>
+              <th>更新日期</th>
+
+            </tr>
+            </thead>
+            <tbody>
+                {% for breakdown in breakdowns %}
+                <tr>
+                  <td>{{ forloop.counter }}</td> 
+                  <td>{{ breakdown.company }}</td>
+                  <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.title }}</a></td>
+                  <td>{{ breakdown.part_number }}</td>
+                  <td>{{ breakdown.overhead}}</td>
+                  <td>{{ breakdown.profit}}</td>
+                  <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
+                </tr>
+                {% empty %}
+                  <tr>没有数据！</tr>
+                {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+        </div>
+    <!-- /.col -->
+      </div>
+    <!-- /.row -->
+    </section>
+
 {% endblock %}
 
-
 {% block script %}
+
+<script src="{% static 'adminlet-2.4.10/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlet-2.4.10/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script>
+$(function () {
+        $('#breakdowns_table').DataTable({
+          "paging": true,       <!-- 允许分页 -->
+          "lengthChange": true, <!-- 允许改变每页显示的行数 -->
+          "searching": true,    <!-- 允许内容搜索 -->
+          "ordering": true,     <!-- 允许排序 -->
+          "info": true,         <!-- 显示信息 -->
+          "autoWidth": false    <!-- 固定宽度 -->
+        });
+      });
+</script>
+
 {% endblock %}
