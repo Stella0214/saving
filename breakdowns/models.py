@@ -133,7 +133,7 @@ class MaterialBreakdown(models.Model):
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
     title = models.CharField(max_length=120, help_text='Material Title') # material title
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE) 
-    quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1.0)
+    quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1.00)
     price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     scrap = models.DecimalField('Scrap (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Scrap')
     overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Overhead')
@@ -185,14 +185,14 @@ class ManufacturingBreakdown(models.Model):
     """
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
     process_step = models.CharField(max_length=120, help_text='Manufacturing Process Step') 
-    labor_quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1.0)
-    labor_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
-    machine_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.0, help_text='Machine hourly rate')
+    labor_quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1.00)
+    labor_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    machine_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.00, help_text='Machine hourly rate')
     cycle_time = models.DecimalField(max_digits=6, decimal_places=2, help_text='Number of minutes of cycle time')
     parts = models.IntegerField(default=1) # parts per hour
     scrap = models.DecimalField('Scrap (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Scrap')
     overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 30 for 30% Overhead')
-    setup = models.DecimalField(max_digits=8, decimal_places=2, default=0.0) # setup cost
+    setup = models.DecimalField(max_digits=8, decimal_places=2, default=0.00) # setup cost
 
     class Meta:
        verbose_name = 'manufacturing breakdown'
