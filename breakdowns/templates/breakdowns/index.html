@@ -40,6 +40,7 @@
               <th>公司</th>
               <th>名称</th>
               <th>PN</th>
+              <th>应该成本</th>
               <th>管理费</th>
               <th>利润</th>
               <th>更新日期</th>
@@ -53,6 +54,7 @@
                   <td>{{ breakdown.company }}</td>
                   <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.title }}</a></td>
                   <td>{{ breakdown.part_number }}</td>
+                  <td>{{ breakdown.total_cost }}</td>
                   <td>{{ breakdown.overhead}}</td>
                   <td>{{ breakdown.profit}}</td>
                   <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
