@@ -44,7 +44,7 @@ def login(request):
                 request.session['is_login'] = True
                 request.session['user_id'] = user.id
                 request.session['user_name'] = user.name
-                return redirect('/')
+                return redirect('/breakdowns/index/')
             else:
                 message = '密码不正确！'
                 return render(request, 'home/login.html', locals())
@@ -101,4 +101,4 @@ def logout(request):
     # del request.session['is_login']
     # del request.session['user_id']
     # del request.session['user_name']
-    return redirect("/login/")
+    return redirect("/")

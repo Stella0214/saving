@@ -10,8 +10,10 @@
 <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        成本模型总表
-        <small>CostModel List</small>
+        {{ request.session.user_name }}! 欢迎来到{{ settings.APP_NAME }}</h1>
+        <p>
+        <a href="/logout/">登出</a>
+        </p>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
@@ -41,7 +43,9 @@
               <th>名称</th>
               <th>PN</th>
               <th>应该成本</th>
+              <th>材料费</th>
               <th>管理费</th>
+              <th>其它</th>
               <th>利润</th>
               <th>更新日期</th>
 
@@ -55,8 +59,10 @@
                   <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.title }}</a></td>
                   <td>{{ breakdown.part_number }}</td>
                   <td>{{ breakdown.total_cost }}</td>
-                  <td>{{ breakdown.overhead}}</td>
-                  <td>{{ breakdown.profit}}</td>
+                  <td>{{ materials.materialtotal }}                  
+                  <td>{{ breakdown.overhead_cost}}</td>
+                  <td>{{ breakdown.special_cost }}
+                  <td>{{ breakdown.profit_cost}}</td>
                   <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
                 </tr>
                 {% empty %}
