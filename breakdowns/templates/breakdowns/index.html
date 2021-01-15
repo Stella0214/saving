@@ -10,7 +10,7 @@
 <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        {{ request.session.user_name }}! 欢迎来到{{ settings.APP_NAME }}</h1>
+        {{ request.session.user_name|capfirst }}! 欢迎来到{{ settings.APP_NAME }}</h1>
         <p>
         <a href="/logout/">登出</a>
         </p>
@@ -43,29 +43,32 @@
               <th>名称</th>
               <th>PN</th>
               <th>应该成本</th>
-              <th>材料费</th>
-              <th>管理费</th>
-              <th>其它</th>
+              <th>材料费用</th>
+              <th>制造费用</th>
+              <th>管理费用</th>
+              <th>其它费用</th>
               <th>利润</th>
               <th>更新日期</th>
 
             </tr>
             </thead>
             <tbody>
+            <tbody>
                 {% for breakdown in breakdowns %}
                 <tr>
                   <td>{{ forloop.counter }}</td> 
                   <td>{{ breakdown.company }}</td>
-                  <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.title }}</a></td>
+                  <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.title|capfirst }}</a></td>
                   <td>{{ breakdown.part_number }}</td>
                   <td>{{ breakdown.total_cost }}</td>
-                  <td>{{ materials.materialtotal }}                  
+                  <td>{{ breakdown.material_cost }}</td>    
+                  <td>{{ breakdown.manufacturing_cost }}</td>               
                   <td>{{ breakdown.overhead_cost}}</td>
-                  <td>{{ breakdown.special_cost }}
+                  <td>{{ breakdown.special_cost }}</td>
                   <td>{{ breakdown.profit_cost}}</td>
                   <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
                 </tr>
-                {% empty %}
+                  {% empty %}
                   <tr>没有数据！</tr>
                 {% endfor %}
 
@@ -80,7 +83,6 @@
       </div>
     <!-- /.row -->
     </section>
-
 {% endblock %}
 
 {% block script %}

@@ -29,10 +29,9 @@ class CostBreakdown(models.Model):
     """
     Model representing a cost breakdown
     """
-
+    company = models.CharField(max_length=120, help_text='Company') # company or supplier for the part number
     title = models.CharField(max_length=120, help_text='Costmodel Title') # costmodel title
     part_number = models.CharField(max_length=120, help_text='Part Number') # customer or manufacturer part number
-    company = models.CharField(max_length=120, help_text='Company') # company or supplier for the part number
     overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 10 for 10% Overhead') # will connect to class overhead
     packaging = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     freight = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
@@ -57,7 +56,7 @@ class CostBreakdown(models.Model):
         super(CostBreakdown, self).__init__(*args, **kwargs)
         self.mb_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
         self.gb_list = tuple(ManufacturingBreakdown.objects.filter(costbreakdown_id=self.pk))
-            
+          
     def material_cost(self, *args, **kwargs):
         """
         Returns total material cost
@@ -153,7 +152,7 @@ class MaterialBreakdown(models.Model):
         """
         Returns a single material scrap cost
         """
-        return round(self.material_net_cost / (1 - self.scrap / 100) - self.material_net_cost, 2) 
+        return round(self.material_net_cost * self.scrap / 100, 2) 
 
     def material_overhead_cost(self):
         """
@@ -221,7 +220,7 @@ class ManufacturingBreakdown(models.Model):
         """
         Returns a single manufacturing scrap cost
         """
-        return round(self.manufacturing_net_cost / (1 - self.scrap / 100) - self.manufacturing_net_cost, 2) 
+        return round(self.manufacturing_net_cost * self.scrap / 100, 2) 
 
     def manufacturing_overhead_cost(self):
         """
