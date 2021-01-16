@@ -26,7 +26,7 @@ class HomeView(View):
 
 def login(request):
     if request.session.get('is_login', None):  # 不允许重复登录
-        return redirect('/index/')
+        return redirect('/breakdowns/index/')
     if request.method == 'POST':
         login_form = forms.UserForm(request.POST)
         message = '请检查填写的内容！'

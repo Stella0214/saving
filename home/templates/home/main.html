@@ -1,20 +1,16 @@
-
+{% extends "base_menu.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ settings.APP_NAME }}</title>
-</head>
+
+{% block content %}
+
 <body>
     <h1>欢迎来到{{ settings.APP_NAME }}</h1>
-    <p>
-    <a href="/login/">登录</a>
-    </p>
     <div>
+    <!--
     <img src = "static/home/images/background.jpg"
     class="img-responsive">
     </div>
+    -->
 </body>
-</html>
 
+{% endblock %}
