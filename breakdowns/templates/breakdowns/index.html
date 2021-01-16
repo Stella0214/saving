@@ -10,11 +10,11 @@
 <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        {{ request.session.user_name|capfirst }}! 欢迎来到{{ settings.APP_NAME }}</h1>
-        <p>
-        <a href="/logout/">登出</a>
-        </p>
+        {{ request.session.user_name|capfirst }}! 欢迎来到{{ settings.APP_NAME }}
       </h1>
+      <p>
+        <a href="/logout/">登出</a>
+    </p>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
         <li class="active">成本模型总表</li>
@@ -31,7 +31,8 @@
 
         <div class="box">
         <div class="box-header">
-          <h3 class="box-title">成本模型总表</h3>
+          <h3 class="box-title"></h3>
+          <small></small>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -40,38 +41,31 @@
             <tr>
               <th>序号</th>
               <th>公司</th>
+              <th>国家</th>
+              <th>地区</th>
+              <th>行业</th>
               <th>名称</th>
-              <th>PN</th>
+              <th>型号</th>
               <th>应该成本</th>
-              <th>材料费用</th>
-              <th>制造费用</th>
-              <th>管理费用</th>
-              <th>其它费用</th>
-              <th>利润</th>
               <th>更新日期</th>
-
             </tr>
             </thead>
-            <tbody>
             <tbody>
                 {% for breakdown in breakdowns %}
                 <tr>
                   <td>{{ forloop.counter }}</td> 
                   <td>{{ breakdown.company }}</td>
-                  <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.title|capfirst }}</a></td>
+                  <td>{{ breakdown.country }}</td>
+                  <td>{{ breakdown.region }}</td>
+                  <td>{{ breakdown.industry }}</td>
+                  <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.description}}</a></td>
                   <td>{{ breakdown.part_number }}</td>
                   <td>{{ breakdown.total_cost }}</td>
-                  <td>{{ breakdown.material_cost }}</td>    
-                  <td>{{ breakdown.manufacturing_cost }}</td>               
-                  <td>{{ breakdown.overhead_cost}}</td>
-                  <td>{{ breakdown.special_cost }}</td>
-                  <td>{{ breakdown.profit_cost}}</td>
                   <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
                 </tr>
-                  {% empty %}
+                {% empty %}
                   <tr>没有数据！</tr>
                 {% endfor %}
-
             </tbody>
           </table>
         </div>
@@ -83,6 +77,7 @@
       </div>
     <!-- /.row -->
     </section>
+
 {% endblock %}
 
 {% block script %}
@@ -91,6 +86,7 @@
 <script src="{% static 'adminlet-2.4.10/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
 <script>
+
 $(function () {
         $('#breakdowns_table').DataTable({
           "paging": true,       <!-- 允许分页 -->
@@ -101,6 +97,7 @@ $(function () {
           "autoWidth": false    <!-- 固定宽度 -->
         });
       });
+
 </script>
 
 {% endblock %}

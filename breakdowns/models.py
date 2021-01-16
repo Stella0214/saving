@@ -7,6 +7,46 @@ from datetime import date, timedelta
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+# total_cost = material_cost + manufacturing_cost + overhead_cost + special_cost + profit
+class CostBreakdown(models.Model):
+    """
+    Costmodel 1st level breakdown
+    """
+    
+    company = models.CharField(max_length=64, help_text='公司') 
+    country = models.CharField(max_length=64, help_text='国家') 
+    region = models.CharField(max_length=64, help_text='地区') 
+    industry = models.CharField(max_length=64, help_text='行业') 
+    description = models.CharField(max_length=64, unique=True, help_text='名称') # 不可重复
+    part_number = models.CharField(max_length=120, unique=True, help_text='型号') # 不可重复
+    
+    material_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    manufacturing_cost= models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = '成本明细'
+        verbose_name_plural = '成本明细'
+        ordering = ['company']
+  
+    def total_cost(self, *args, **kwargs):
+        """
+        Returns the total cost of the cost breakdown 
+        """
+        return round(self.material_cost + self.manufacturing_cost + self.overhead_cost + self.special_cost + self.profit, 2)
+
+    def __str__(self):
+        """
+        Returns string repsentation of the CostBreakdown model
+        """
+        return self.description
+
+'''
 class Unit(models.Model):
     """
     Model representing material measurement units
@@ -51,16 +91,17 @@ class CostBreakdown(models.Model):
                 ('manage_cost_breakdown', 'Can manage own cost breakdown'),
                 ('manage_library', 'Can manage standard cost breakdown library'),
             ) 
-    
+  
     def __init__(self, *args, **kwargs):  
         super(CostBreakdown, self).__init__(*args, **kwargs)
         self.mb_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
         self.gb_list = tuple(ManufacturingBreakdown.objects.filter(costbreakdown_id=self.pk))
-          
+       
     def material_cost(self, *args, **kwargs):
         """
         Returns total material cost
         """
+
         result = 0
         for mb in self.mb_list:
             result += mb.materialtotal()
@@ -76,7 +117,7 @@ class CostBreakdown(models.Model):
             result += gb.manufacturingtotal()
 
         return result
-
+    
     def production_cost(self, *args, **kwargs): 
         """
         Returns the production cost of the breakdown
@@ -246,5 +287,5 @@ class ManufacturingBreakdown(models.Model):
         Returns string repsentation of the manufacturingbreakdown model
         """
         return '{} Manufacturing Breakdown'.format(self.process_step)
-
+'''
 

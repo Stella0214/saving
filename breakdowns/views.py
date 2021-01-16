@@ -6,7 +6,7 @@ import json
 from breakdowns import models
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from .models import CostBreakdown, MaterialBreakdown, ManufacturingBreakdown, Unit
+from .models import CostBreakdown
 from django.views import generic
 
 
@@ -41,6 +41,5 @@ def dashboard(request):
 
 
 def detail(request, costbreakdown_id):
-
     breakdown = get_object_or_404(models.CostBreakdown, id=costbreakdown_id)
     return render(request, 'breakdowns/detail.html', locals())

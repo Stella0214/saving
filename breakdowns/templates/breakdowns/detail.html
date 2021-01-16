@@ -11,7 +11,7 @@
     <section class="content-header">
       <h1>
         成本模型详细
-        <small>CostModel Info</small>
+        <small>Costmodel Info</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
@@ -22,6 +22,84 @@
 {% endblock %}
 
 {% block content %}
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="box">
+
+          <div class="box-header with-border">
+          <h3 class="box-title"><strong class="btn btn-block btn-primary btn-lg">成本模型：{{ breakdown.description }}</strong></h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+              <i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fa fa-times"></i></button>
+          </div>
+        </div>
+
+          <div class="box-body">
+          <h4><b>概览:</b></h4>
+            <table border="1" class="table  table-responsive" style="border-left:3px solid deepskyblue;border-bottom:1px solid deepskyblue" >
+                <thead>
+                    <tr>
+                        <th>公司</th>
+                        <th>国家</th>
+                        <th>地区</th>
+                        <th>行业</th>
+                        <th>型号</th>
+                        <th>更新日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ breakdown.company }}</td>
+                    <td>{{ breakdown.country }}</td>
+                    <td>{{ breakdown.region }}</td>
+                    <td>{{ breakdown.industry }}</td>
+                    <td>{{ breakdown.part_number }}</td>
+                    <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <br />
+            
+          <h4><b>成本明细:</b></h4>
+            <table border="1" class="table  table-responsive" style="border-left:3px solid green;border-bottom:1px solid green">
+                <thead>
+                    <tr>
+                        <th>应该成本</th>
+                        <th>材料成本</th>
+                        <th>制造成本</th>
+                        <th>管理成本</th>
+                        <th>其它直接成本</th>
+                        <th>利润</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ breakdown.total_cost }}</td>
+                    <td>{{ breakdown.material_cost }}</td>
+                    <td>{{ breakdown.manufacturing_cost }}</td>
+                    <td>{{ breakdown.overhead_cost }}</td>
+                    <td>{{ breakdown.special_cost }}</td>
+                    <td>{{ breakdown.profit }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+          <i class="fa fa-angle-double-left"></i>&nbsp;&nbsp;<a href="{% url 'breakdowns:index' %}"><strong>返回成本模型总表</strong></a>
+        </div>
+        <!-- /.box-footer-->
+      </div>
+      <!-- /.box -->
+
+    </section>
+    <!-- /.content -->
 
 {% endblock %}
 
