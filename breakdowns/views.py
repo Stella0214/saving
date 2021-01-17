@@ -8,8 +8,9 @@ from django.shortcuts import get_object_or_404
 from django.views import generic
 from .models import CostBreakdown
 from django.views import generic
+#from django.contrib.auth.decorators import login_required
 
-
+#@login_required
 def index(request):
 
     breakdowns = models.CostBreakdown.objects.all()
@@ -35,11 +36,12 @@ class MyBreakdownList(generic.ListView):
         context['page_name'] = 'my cost breakdowns'
         return context
 '''
+#@login_required
 def dashboard(request):
     pass
     return render(request, 'breakdowns/dashboard.html', locals())
 
-
+#@login_required
 def detail(request, costbreakdown_id):
     breakdown = get_object_or_404(models.CostBreakdown, id=costbreakdown_id)
     return render(request, 'breakdowns/detail.html', locals())
