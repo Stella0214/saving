@@ -36,7 +36,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <table id="breakdowns_table" class="table table-bordered table-striped">
+          <table id="costbreakdown_table" class="table table-bordered table-striped">
             <thead>
             <tr>
               <th>序号</th>
@@ -51,17 +51,18 @@
             </tr>
             </thead>
             <tbody>
-                {% for breakdown in breakdowns %}
+
+                {% for costbreakdown in costbreakdown_list %}
                 <tr>
                   <td>{{ forloop.counter }}</td> 
-                  <td>{{ breakdown.company }}</td>
-                  <td>{{ breakdown.country }}</td>
-                  <td>{{ breakdown.region }}</td>
-                  <td>{{ breakdown.industry }}</td>
-                  <td><a href="{% url 'breakdowns:detail' breakdown.id %}">{{ breakdown.description}}</a></td>
-                  <td>{{ breakdown.part_number }}</td>
-                  <td>{{ breakdown.total_cost }}</td>
-                  <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
+                  <td>{{ costbreakdown.company }}</td>
+                  <td>{{ costbreakdown.country }}</td>
+                  <td>{{ costbreakdown.region }}</td>
+                  <td>{{ costbreakdown.industry }}</td>
+                  <td><a href="{% url 'breakdowns:detail' costbreakdown.id %}">{{ costbreakdown.description}}</a></td>
+                  <td>{{ costbreakdown.part_number }}</td>
+                  <td>{{ costbreakdown.total_cost }}</td>
+                  <td>{{ costbreakdown.updated_at|date:"Y/m/d" }}</td>
                 </tr>
                 {% empty %}
                   <tr>没有数据！</tr>
@@ -88,7 +89,7 @@
 <script>
 
 $(function () {
-        $('#breakdowns_table').DataTable({
+        $('#costbreakdown_table').DataTable({
           "paging": true,       <!-- 允许分页 -->
           "lengthChange": true, <!-- 允许改变每页显示的行数 -->
           "searching": true,    <!-- 允许内容搜索 -->

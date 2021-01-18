@@ -1,29 +1,31 @@
-from django.shortcuts import render
-from django.shortcuts import HttpResponse
+from django.shortcuts import render, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 import json
 from breakdowns import models
 from django.shortcuts import get_object_or_404
-from django.views import generic
+
 from .models import CostBreakdown
-from django.views import generic
+from django.views.generic import ListView
+
 #from django.contrib.auth.decorators import login_required
 
 #@login_required
+'''
 def index(request):
 
     breakdowns = models.CostBreakdown.objects.all()
 
     return render(request, 'breakdowns/index.html', locals())
-
 '''
+
 # All My Cost breakdowns list
-class MyBreakdownList(generic.ListView):
+class CostBreakdownList(ListView):
     model = CostBreakdown
+    context_object_name = 'costbreakdown_list'
     template_name = 'breakdowns/index.html'
 
-
+'''
     def test_func(self, *args, **kwargs):
         breakdowns = models.CostBreakdown.objects.all()
         return breakdowns
@@ -36,12 +38,13 @@ class MyBreakdownList(generic.ListView):
         context['page_name'] = 'my cost breakdowns'
         return context
 '''
-#@login_required
-def dashboard(request):
-    pass
-    return render(request, 'breakdowns/dashboard.html', locals())
 
 #@login_required
 def detail(request, costbreakdown_id):
     breakdown = get_object_or_404(models.CostBreakdown, id=costbreakdown_id)
     return render(request, 'breakdowns/detail.html', locals())
+
+#@login_required
+def dashboard(request):
+    pass
+    return render(request, 'breakdowns/dashboard.html', locals())
