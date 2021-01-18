@@ -6,7 +6,7 @@ from breakdowns import models
 from django.shortcuts import get_object_or_404
 
 from .models import CostBreakdown
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 #from django.contrib.auth.decorators import login_required
 
@@ -37,12 +37,18 @@ class CostBreakdownList(ListView):
         context = super(MyBreakdownList, self).get_context_data(*args, **kwargs)
         context['page_name'] = 'my cost breakdowns'
         return context
-'''
+
 
 #@login_required
 def detail(request, costbreakdown_id):
     breakdown = get_object_or_404(models.CostBreakdown, id=costbreakdown_id)
     return render(request, 'breakdowns/detail.html', locals())
+'''
+
+class CostBreakdownDetail(DetailView):
+    model = CostBreakdown
+    context_object_name = 'costbreakdown'
+    template_name = 'breakdowns/detail.html'
 
 #@login_required
 def dashboard(request):

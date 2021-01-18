@@ -30,7 +30,7 @@
       <div class="box">
 
           <div class="box-header with-border">
-          <h3 class="box-title"><strong class="btn btn-block btn-primary btn-lg">成本模型：{{ breakdown.description }}</strong></h3>
+          <h3 class="box-title"><strong class="btn btn-block btn-primary btn-lg">成本模型：{{ costbreakdown.description }}</strong></h3>
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -55,12 +55,12 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>{{ breakdown.company }}</td>
-                    <td>{{ breakdown.country }}</td>
-                    <td>{{ breakdown.region }}</td>
-                    <td>{{ breakdown.industry }}</td>
-                    <td>{{ breakdown.part_number }}</td>
-                    <td>{{ breakdown.updated_at|date:"Y/m/d" }}</td>
+                    <td>{{ costbreakdown.company }}</td>
+                    <td>{{ costbreakdown.country }}</td>
+                    <td>{{ costbreakdown.region }}</td>
+                    <td>{{ costbreakdown.industry }}</td>
+                    <td>{{ costbreakdown.part_number }}</td>
+                    <td>{{ costbreakdown.updated_at|date:"Y/m/d" }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -80,12 +80,12 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>{{ breakdown.total_cost }}</td>
-                    <td>{{ breakdown.material_cost }}</td>
-                    <td>{{ breakdown.manufacturing_cost }}</td>
-                    <td>{{ breakdown.overhead_cost }}</td>
-                    <td>{{ breakdown.special_cost }}</td>
-                    <td>{{ breakdown.profit }}</td>
+                    <td>{{ costbreakdown.total_cost }}</td>
+                    <td>{{ costbreakdown.material_cost }}</td>
+                    <td>{{ costbreakdown.manufacturing_cost }}</td>
+                    <td>{{ costbreakdown.overhead_cost }}</td>
+                    <td>{{ costbreakdown.special_cost }}</td>
+                    <td>{{ costbreakdown.profit }}</td>
                 </tr>
                 </tbody>
             </table>
