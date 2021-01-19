@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'home',
-    'captcha',
     'breakdowns',
 ]
 

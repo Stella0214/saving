@@ -13,8 +13,9 @@
         {{ request.session.user_name|capfirst }} 欢迎来到{{ settings.APP_NAME }}
       </h1>
       <p>
-        <a href="/logout/">退出</a>
-    </p>
+        <a href="{% url 'logout' %}?next={% url 'login' %}">退出</a> <br>
+        <a href="{% url 'breakdowns:costbreakdown_create' %}">增加成本模型</a> 
+      </p>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
         <li class="active">成本模型总表</li>
@@ -59,7 +60,7 @@
                   <td>{{ costbreakdown.country }}</td>
                   <td>{{ costbreakdown.region }}</td>
                   <td>{{ costbreakdown.industry }}</td>
-                  <td><a href="{% url 'breakdowns:detail' costbreakdown.id %}">{{ costbreakdown.description}}</a></td>
+                  <td><a href="{% url 'breakdowns:costbreakdown_detail' costbreakdown.id %}">{{ costbreakdown.description}}</a></td>
                   <td>{{ costbreakdown.part_number }}</td>
                   <td>{{ costbreakdown.total_cost }}</td>
                   <td>{{ costbreakdown.updated_at|date:"Y/m/d" }}</td>

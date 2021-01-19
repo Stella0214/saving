@@ -40,6 +40,12 @@ class CostBreakdown(models.Model):
         """
         return round(self.material_cost + self.manufacturing_cost + self.overhead_cost + self.special_cost + self.profit, 2)
 
+    def get_absolute_url(self):
+        """
+        Returns a particular instance of costbreakdown
+        """
+        return reverse('breakdowns:detail', kwargs={'pk': self.pk})    
+    
     def __str__(self):
         """
         Returns string repsentation of the CostBreakdown model

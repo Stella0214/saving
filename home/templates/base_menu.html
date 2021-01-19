@@ -17,12 +17,12 @@
                 <img style="width: 25px;" src="{{ user }}"/><b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="/logout/">退出</a></li>
+                <li><a href="{% url 'logout' %}?next={% url 'breakdowns:all' %}">退出</a></li>
             </ul>
         </li>
         {% else %}
         <li>
-        <a href="/login/">登录</a>
+        <a href="{% url 'login' %}?next={% url 'breakdowns:all' %}">登录</a>
         </li>
         {% endif %}
     </ul>

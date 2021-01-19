@@ -29,7 +29,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Keep
     
     path('breakdowns/', include('breakdowns.urls')), # Add
-    path('captcha/', include('captcha.urls')) 
+
 ]
 
 # Serve the static HTML

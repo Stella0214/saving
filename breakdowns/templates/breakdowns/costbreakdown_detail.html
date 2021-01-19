@@ -13,6 +13,10 @@
         成本模型详细
         <small>Costmodel Info</small>
       </h1>
+      <p>
+        <a href="{% url 'breakdowns:costbreakdown_update' costbreakdown.id %}">更新<i class="fa fa-pencil"></i></a><br>
+        <a href="{% url 'breakdowns:costbreakdown_delete' costbreakdown.id %}">删除<i class="fa fa-trash"></i></a>
+      </p>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
         <li>成本模型总表</li>
@@ -92,7 +96,8 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <i class="fa fa-angle-double-left"></i>&nbsp;&nbsp;<a href="{% url 'breakdowns:index' %}"><strong>返回成本模型总表</strong></a>
+          <i class="fa fa-angle-double-left"></i>&nbsp;&nbsp;<a href="{% url 'breakdowns:all' %}"><strong>返回成本模型总表</strong></a>
+
         </div>
         <!-- /.box-footer-->
       </div>
