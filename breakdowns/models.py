@@ -25,7 +25,8 @@ class CostBreakdown(models.Model):
     overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-
+    
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

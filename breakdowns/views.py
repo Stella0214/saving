@@ -5,14 +5,9 @@ from breakdowns import models
 
 from .models import CostBreakdown
 from django.views.generic import ListView, DetailView
-from django.urls import reverse_lazy  # 懒解析
 from django.views.generic.edit import CreateView, DeleteView, UpdateView  # 导入
 from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
-from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 #from django.contrib.auth.decorators import login_required
@@ -39,11 +34,11 @@ class CostBreakdownDetail(OwnerDetailView):
 
 class CostBreakdownCreate(OwnerCreateView):
     model = CostBreakdown
-    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'material_cost', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit',]
+    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'material_cost', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit']
 
 class CostBreakdownUpdate(OwnerUpdateView):
     model = CostBreakdown
-    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'material_cost', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit',]
+    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'material_cost', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit']
 
 class CostBreakdownDelete(OwnerDeleteView):
     model = CostBreakdown

@@ -13,7 +13,7 @@
         {{ request.session.user_name|capfirst }} 欢迎来到{{ settings.APP_NAME }}
       </h1>
       <p>
-        <a href="{% url 'logout' %}?next={% url 'login' %}">退出</a> <br>
+        <a href="{% url 'logout' %}?next={% url 'breakdowns:all' %}">退出</a> <br>
         <a href="{% url 'breakdowns:costbreakdown_create' %}">增加成本模型</a> 
       </p>
       <ol class="breadcrumb">
@@ -54,6 +54,7 @@
             <tbody>
 
                 {% for costbreakdown in costbreakdown_list %}
+
                 <tr>
                   <td>{{ forloop.counter }}</td> 
                   <td>{{ costbreakdown.company }}</td>
@@ -65,6 +66,7 @@
                   <td>{{ costbreakdown.total_cost }}</td>
                   <td>{{ costbreakdown.updated_at|date:"Y/m/d" }}</td>
                 </tr>
+
                 {% empty %}
                   <tr>没有数据！</tr>
                 {% endfor %}
