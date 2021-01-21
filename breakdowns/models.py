@@ -45,11 +45,61 @@ class CostBreakdown(models.Model):
         """
         Returns a particular instance of costbreakdown
         """
-        return reverse('breakdowns:detail', kwargs={'pk': self.pk})    
+        return reverse('breakdowns:costbreakdown_detail', kwargs={'pk': self.pk})    
     
     def __str__(self):
         """
         Returns string repsentation of the CostBreakdown model
+        """
+        return self.description
+
+# material_cost = ∑(bom_cost + loss_cost + material_overhead_cost + indirect_cost)
+class MaterialBreakdown(models.Model):
+    """
+    Model representing a material breakdown
+    """
+    costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
+
+    description = models.CharField(max_length=64, unique=True, help_text='物料名称') # 不可重复
+    part_number = models.CharField(max_length=120, unique=True, help_text='物料型号') # 不可重复
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    usage = models.DecimalField(max_digits=12, decimal_places=2, default=1.00)
+    indirect_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    loss_rate = models.DecimalField('Loss_Rate (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Loss_Rate')
+    material_overhead_rate = models.DecimalField('Material_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Material_Overhead_Rate')
+
+    class Meta:
+       verbose_name = '物料明细'
+       verbose_name_plural = '物料明细'
+       ordering = ['costbreakdown', 'description', '-price'] 
+
+    def bom_cost(self):
+        """
+        Returns a single material net cost
+        """
+        return round(self.price * self.usage, 2)  
+    
+    def loss_cost(self):
+        """
+        Returns a single material scrap cost
+        """
+        return round(self.bom_cost * self.loss_rate / 100, 2) 
+
+    def material_overhead_cost(self):
+        """
+        Returns a single material overhead cost
+        """
+        return round((self.bom_cost + self.loss_cost) * self.material_overhead_rate / 100, 2) 
+
+    def material_subtotal_cost(self):
+        """
+        Returns subtotal of a single material cost
+        """
+        return round(self.bom_cost + self.loss_cost + self.material_overhead_cost + self.indirect_cost, 2)
+
+    def __str__(self):
+        """
+        Returns string repsentation of the MaterialBreakdown model
         """
         return self.description
 
