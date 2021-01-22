@@ -22,7 +22,7 @@ class CostBreakdown(models.Model):
     
     # material_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     manufacturing_cost= models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    # overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     
@@ -38,6 +38,7 @@ class CostBreakdown(models.Model):
     def __init__(self, *args, **kwargs):  
         super(CostBreakdown, self).__init__(*args, **kwargs)
         self.material_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
+        self.overhead_list = tuple(OverheadBreakdown.objects.filter(costbreakdown_id=self.pk))
        
     def material_cost(self, *args, **kwargs):
         """
@@ -49,12 +50,29 @@ class CostBreakdown(models.Model):
             result += material.material_subtotal_cost()
 
         return result
-  
+
+    def overhead_cost(self, *args, **kwargs):
+        """
+        Returns total material cost
+        """
+
+        return round(self.development_overhead_cost(), 2)
+    
+    def development_overhead_cost(self, *args, **kwargs):
+        """
+        Returns total material cost
+        """
+        result = 0
+        for overhead in self.overhead_list:
+            result += overhead.development_overhead_rate
+
+        return round((self.material_cost() + self.manufacturing_cost) * result / 100, 2) 
+
     def total_cost(self, *args, **kwargs):
         """
         Returns the total cost of the cost breakdown 
         """
-        return round(self.material_cost() + self.manufacturing_cost + self.overhead_cost + self.special_cost + self.profit, 2)
+        return round(self.material_cost() + self.manufacturing_cost + self.overhead_cost() + self.special_cost + self.profit, 2)
 
     def get_absolute_url(self):
         """
@@ -80,7 +98,7 @@ class MaterialBreakdown(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     usage = models.DecimalField(max_digits=12, decimal_places=2, default=1.00)
     indirect_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    loss_rate = models.DecimalField('Loss_Rate (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Loss_Rate')
+    loss_rate = models.DecimalField('Loss_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Loss_Rate')
     material_overhead_rate = models.DecimalField('Material_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Material_Overhead_Rate')
 
     class Meta:
@@ -118,6 +136,29 @@ class MaterialBreakdown(models.Model):
         """
         return '{} 物料明细'.format(self.description)
 
+# overhead_cost = development_cost + sales_cost + administration_cost + logistics_cost
+class OverheadBreakdown(models.Model):
+    """
+    Model representing a overhead breakdown
+    """
+    costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
+
+    development_overhead_rate = models.DecimalField('Development_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 5 for 5% Development_Overhead_Rate')
+    #sales_overhead_rate = models.DecimalField('Sales_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Sales_Overhead_Rate')
+    #administration_overhead_rate = models.DecimalField('Administration_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Administration_Overhead_Rate')
+    #logistics_overhead_rate = models.DecimalField('Logistics_Overhead_Rate (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Logistics_Overhead_Rate')
+    
+    class Meta:
+       verbose_name = '管理费明细'
+       verbose_name_plural = '管理费明细'
+       ordering = ['costbreakdown'] 
+'''
+    def __str__(self):
+        """
+        Returns string repsentation of the MaterialBreakdown model
+        """
+        return self
+'''
 '''
 class Unit(models.Model):
     """

@@ -34,9 +34,8 @@
       <!-- Default box -->
       <div class="box">
 
-          <div class="box-header with-border">
+        <div class="box-header with-border">
           <h3 class="box-title"><strong class="btn btn-block btn-primary btn-lg">成本模型：{{ costbreakdown.description }}</strong></h3>
-
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -45,7 +44,7 @@
           </div>
         </div>
 
-          <div class="box-body">
+        <div class="box-body">
           <h4><b>概览:</b></h4>
             <table border="1" class="table  table-responsive" style="border-left:3px solid deepskyblue;border-bottom:1px solid deepskyblue" >
                 <thead>
@@ -71,12 +70,12 @@
             </table>
             <br />
             
-          <h4><b>成本明细:</b></h4>
+          <h4><b>总成本明细:</b></h4>
             <table border="1" class="table  table-responsive" style="border-left:3px solid green;border-bottom:1px solid green">
                 <thead>
                     <tr>
                         <th>应该成本</th>
-                        <th>材料成本</th>
+                        <th>物料总成本</th>
                         <th>制造成本</th>
                         <th>管理成本</th>
                         <th>其它直接成本</th>
@@ -94,8 +93,32 @@
                 </tr>
                 </tbody>
             </table>
+          
+            <h4><b>物料成本明细:</b></h4>
+            <table border="1" class="table  table-responsive" style="border-left:3px solid purple;border-bottom:1px solid purple">
+                <thead>
+                    <tr>
+                        <th style="width:5%;">序号</th>
+                        <th>物料成本</th>
+                        <th>损耗成本</th>
+                        <th>管理成本</th>
+                        <th>间接成本</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for material in costbreakdown.materialbreakdown_set.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ material.bom_cost }}</td>
+                    <td>{{ material.loss_cost }}</td>
+                    <td>{{ material.material_overhead_cost }}</td>
+                    <td>{{ material.indirect_cost }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>   
         </div>
-        <!-- /.box-body -->
+          <!-- /.box-body -->
         <div class="box-footer">
           <i class="fa fa-angle-double-left"></i>&nbsp;&nbsp;<a href="{% url 'breakdowns:all' %}"><strong>返回成本模型总表</strong></a>
 
