@@ -34,11 +34,11 @@ class CostBreakdownDetail(OwnerDetailView):
 
 class CostBreakdownCreate(OwnerCreateView):
     model = CostBreakdown
-    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'material_cost', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit']
+    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit']
 
 class CostBreakdownUpdate(OwnerUpdateView):
     model = CostBreakdown
-    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'material_cost', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit']
+    fields = ['company', 'country', 'region', 'industry', 'description', 'part_number', 'manufacturing_cost', 'overhead_cost', 'special_cost', 'profit']
 
 class CostBreakdownDelete(OwnerDeleteView):
     model = CostBreakdown

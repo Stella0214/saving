@@ -20,7 +20,7 @@ class CostBreakdown(models.Model):
     description = models.CharField(max_length=64, unique=True, help_text='名称') # 不可重复
     part_number = models.CharField(max_length=120, unique=True, help_text='型号') # 不可重复
     
-    material_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    # material_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     manufacturing_cost= models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
@@ -34,12 +34,27 @@ class CostBreakdown(models.Model):
         verbose_name = '成本明细'
         verbose_name_plural = '成本明细'
         ordering = ['company']
+    
+    def __init__(self, *args, **kwargs):  
+        super(CostBreakdown, self).__init__(*args, **kwargs)
+        self.material_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
+       
+    def material_cost(self, *args, **kwargs):
+        """
+        Returns total material cost
+        """
+
+        result = 0
+        for material in self.material_list:
+            result += material.material_subtotal_cost()
+
+        return result
   
     def total_cost(self, *args, **kwargs):
         """
         Returns the total cost of the cost breakdown 
         """
-        return round(self.material_cost + self.manufacturing_cost + self.overhead_cost + self.special_cost + self.profit, 2)
+        return round(self.material_cost() + self.manufacturing_cost + self.overhead_cost + self.special_cost + self.profit, 2)
 
     def get_absolute_url(self):
         """
@@ -83,25 +98,25 @@ class MaterialBreakdown(models.Model):
         """
         Returns a single material scrap cost
         """
-        return round(self.bom_cost * self.loss_rate / 100, 2) 
+        return round(self.bom_cost() * self.loss_rate / 100, 2) 
 
     def material_overhead_cost(self):
         """
         Returns a single material overhead cost
         """
-        return round((self.bom_cost + self.loss_cost) * self.material_overhead_rate / 100, 2) 
+        return round((self.bom_cost() + self.loss_cost()) * self.material_overhead_rate / 100, 2) 
 
     def material_subtotal_cost(self):
         """
         Returns subtotal of a single material cost
         """
-        return round(self.bom_cost + self.loss_cost + self.material_overhead_cost + self.indirect_cost, 2)
+        return round(self.bom_cost() + self.loss_cost() + self.material_overhead_cost() + self.indirect_cost, 2)
 
     def __str__(self):
         """
         Returns string repsentation of the MaterialBreakdown model
         """
-        return self.description
+        return '{} 物料明细'.format(self.description)
 
 '''
 class Unit(models.Model):
