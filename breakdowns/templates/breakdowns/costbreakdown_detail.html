@@ -74,11 +74,11 @@
             <table border="1" class="table  table-responsive" style="border-left:3px solid green;border-bottom:1px solid green">
                 <thead>
                     <tr>
-                        <th>应该成本</th>
+                        <th>总成本</th>
                         <th>物料总成本</th>
                         <th>制造成本</th>
                         <th>管理成本</th>
-                        <th>其它直接成本</th>
+                        <th>其它成本</th>
                         <th>利润</th>
                     </tr>
                 </thead>
@@ -100,9 +100,9 @@
                     <tr>
                         <th style="width:5%;">序号</th>
                         <th>物料成本</th>
-                        <th>损耗成本</th>
-                        <th>管理成本</th>
-                        <th>间接成本</th>
+                        <th>物料损耗成本</th>
+                        <th>物料管理成本</th>
+                        <th>物料间接成本</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,7 +116,51 @@
                 </tr>
                 {% endfor %}
                 </tbody>
-            </table>   
+            </table> 
+            
+            <h4><b>管理成本明细:</b></h4>
+            <table border="1" class="table  table-responsive" style="border-left:3px solid orangered;border-bottom:1px solid orangered">
+                <thead>
+                    <tr>
+                        <th>研发管理成本</th>
+                        <th>销售管理成本</th>
+                        <th>行政管理成本</th>
+                        <th>物流管理成本</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ costbreakdown.development_overhead_cost }}</td>
+                    <td>{{ costbreakdown.sales_overhead_cost }}</td>
+                    <td>{{ costbreakdown.administration_overhead_cost }}</td>
+                    <td>{{ costbreakdown.logistics_overhead_cost }}</td>
+
+                </tr>
+                </tbody>
+            </table>
+
+            <h4><b>其它成本明细:</b></h4>
+            <table border="1" class="table  table-responsive" style="border-left:3px solid brown;border-bottom:1px solid brown">
+                <thead>
+                    <tr>
+                        <th>包装成本</th>
+                        <th>物流成本</th>
+                        <th>关税成本</th>
+                        <th>模具成本</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for special in costbreakdown.specialbreakdown_set.all %}
+                <tr>
+                    <td>{{ special.packaging_cost }}</td>
+                    <td>{{ special.freight_cost }}</td>
+                    <td>{{ special.duty_cost }}</td>
+                    <td>{{ special.tooling_cost }}</td>
+                {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+
         </div>
           <!-- /.box-body -->
         <div class="box-footer">

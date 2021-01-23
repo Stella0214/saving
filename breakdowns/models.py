@@ -10,7 +10,7 @@ from django.dispatch import receiver
 # total_cost = material_cost + manufacturing_cost + overhead_cost + special_cost + profit
 class CostBreakdown(models.Model):
     """
-    Costmodel 1st level breakdown
+    provide total cost
     """
     
     company = models.CharField(max_length=64, help_text='公司') 
@@ -18,61 +18,102 @@ class CostBreakdown(models.Model):
     region = models.CharField(max_length=64, help_text='地区') 
     industry = models.CharField(max_length=64, help_text='行业') 
     description = models.CharField(max_length=64, unique=True, help_text='名称') # 不可重复
-    part_number = models.CharField(max_length=120, unique=True, help_text='型号') # 不可重复
+    part_number = models.CharField(max_length=120, help_text='型号') 
     
     # material_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    manufacturing_cost= models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    manufacturing_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     # overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    # special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    # profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    profit_rate = models.DecimalField('Profit_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 5 for 5% Profit_Rate')
     
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = '成本明细'
-        verbose_name_plural = '成本明细'
+        verbose_name = '总成本明细'
+        verbose_name_plural = '总成本明细'
         ordering = ['company']
     
     def __init__(self, *args, **kwargs):  
         super(CostBreakdown, self).__init__(*args, **kwargs)
-        self.material_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
-        self.overhead_list = tuple(OverheadBreakdown.objects.filter(costbreakdown_id=self.pk))
-       
+        # self.material_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
+        self.material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.pk)
+        self.overhead_list = OverheadBreakdown.objects.filter(costbreakdown_id=self.pk)
+        self.special_list = SpecialBreakdown.objects.filter(costbreakdown_id=self.pk)
+    
+    def total_cost(self, *args, **kwargs):
+        """
+        Returns the total cost 
+        """
+        return round(self.material_cost() + self.manufacturing_cost + self.overhead_cost() + self.special_cost() + self.profit(), 2)
+    
     def material_cost(self, *args, **kwargs):
         """
-        Returns total material cost
+        Returns material total cost
         """
-
         result = 0
         for material in self.material_list:
             result += material.material_subtotal_cost()
-
         return result
-
+    
     def overhead_cost(self, *args, **kwargs):
         """
-        Returns total material cost
+        Returns overhead cost
         """
-
-        return round(self.development_overhead_cost(), 2)
+        return round(self.development_overhead_cost() + self.sales_overhead_cost() + self.administration_overhead_cost() + self.logistics_overhead_cost(), 2)
     
     def development_overhead_cost(self, *args, **kwargs):
         """
-        Returns total material cost
+        Returns development overhead cost of overhead cost
         """
         result = 0
         for overhead in self.overhead_list:
             result += overhead.development_overhead_rate
-
         return round((self.material_cost() + self.manufacturing_cost) * result / 100, 2) 
 
-    def total_cost(self, *args, **kwargs):
+    def sales_overhead_cost(self, *args, **kwargs):
         """
-        Returns the total cost of the cost breakdown 
+        Returns sales overhead cost of overhead cost
         """
-        return round(self.material_cost() + self.manufacturing_cost + self.overhead_cost() + self.special_cost + self.profit, 2)
+        result = 0
+        for overhead in self.overhead_list:
+            result += overhead.sales_overhead_rate
+        return round((self.material_cost() + self.manufacturing_cost) * result / 100, 2) 
+    
+    def administration_overhead_cost(self, *args, **kwargs):
+        """
+        Returns administration overhead cost of overhead cost
+        """
+        result = 0
+        for overhead in self.overhead_list:
+            result += overhead.administration_overhead_rate
+        return round((self.material_cost() + self.manufacturing_cost) * result / 100, 2) 
+    
+    def logistics_overhead_cost(self, *args, **kwargs):
+        """
+        Returns logistics overhead cost of overhead cost
+        """
+        result = 0
+        for overhead in self.overhead_list:
+            result += overhead.logistics_overhead_rate
+        return round((self.material_cost() + self.manufacturing_cost) * result / 100, 2) 
+
+    def special_cost(self, *args, **kwargs):
+        """
+        Returns special cost of total cost
+        """
+        result = 0
+        for special in self.special_list:
+            result += special.special_total_cost()
+        return result
+    
+    def profit(self, *args, **kwargs):
+        """
+        Returns profit of total cost
+        """
+        return round((self.material_cost() + self.manufacturing_cost + self.overhead_cost() + self.special_cost())*self.profit_rate / 100, 2)
 
     def get_absolute_url(self):
         """
@@ -82,7 +123,7 @@ class CostBreakdown(models.Model):
     
     def __str__(self):
         """
-        Returns string repsentation of the CostBreakdown model
+        Returns string repsentation of the CostBreakdown
         """
         return self.description
 
@@ -114,7 +155,7 @@ class MaterialBreakdown(models.Model):
     
     def loss_cost(self):
         """
-        Returns a single material scrap cost
+        Returns a single material loss cost
         """
         return round(self.bom_cost() * self.loss_rate / 100, 2) 
 
@@ -143,195 +184,55 @@ class OverheadBreakdown(models.Model):
     """
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
 
-    development_overhead_rate = models.DecimalField('Development_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 5 for 5% Development_Overhead_Rate')
-    #sales_overhead_rate = models.DecimalField('Sales_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Sales_Overhead_Rate')
-    #administration_overhead_rate = models.DecimalField('Administration_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Administration_Overhead_Rate')
-    #logistics_overhead_rate = models.DecimalField('Logistics_Overhead_Rate (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Logistics_Overhead_Rate')
+    development_overhead_rate = models.DecimalField('Development_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Development_Overhead_Rate')
+    sales_overhead_rate = models.DecimalField('Sales_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Sales_Overhead_Rate')
+    administration_overhead_rate = models.DecimalField('Administration_Overhead_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Administration_Overhead_Rate')
+    logistics_overhead_rate = models.DecimalField('Logistics_Overhead_Rate (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Logistics_Overhead_Rate')
     
     class Meta:
-       verbose_name = '管理费明细'
-       verbose_name_plural = '管理费明细'
+       verbose_name = '管理成本明细'
+       verbose_name_plural = '管理成本明细'
        ordering = ['costbreakdown'] 
+    
 '''
     def __str__(self):
         """
         Returns string repsentation of the MaterialBreakdown model
         """
-        return self
+        return 
 '''
-'''
-class Unit(models.Model):
+
+class SpecialBreakdown(models.Model):
     """
-    Model representing material measurement units
-    Example: Kg, m, litre, m2, m3, ml, quintal etc
-    """
-    title = models.CharField(max_length=60)
-
-    class Meta:
-        ordering = ['title']
-
-    def __str__(self):
-        """
-        Returns string representation of the Unit model
-        """
-        return self.title
-
-# costmodel 1st level breakdown
-# should cost = material cost + manufacturing cost + overhead cost + special cost + profit cost
-class CostBreakdown(models.Model):
-    """
-    Model representing a cost breakdown
-    """
-    company = models.CharField(max_length=120, help_text='Company') # company or supplier for the part number
-    title = models.CharField(max_length=120, help_text='Costmodel Title') # costmodel title
-    part_number = models.CharField(max_length=120, help_text='Part Number') # customer or manufacturer part number
-    overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 10 for 10% Overhead') # will connect to class overhead
-    packaging = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    freight = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    customs = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    tooling = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    profit = models.DecimalField('Profit (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 5 for 5% Profit')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = 'cost breakdown'
-        verbose_name_plural = 'cost breakdowns'
-        ordering = ['title']
-        #???
-        permissions = (    
-                ('download_cost_breakdown', 'Can download cost breakdown in excel and pdf'),
-                ('manage_cost_breakdown', 'Can manage own cost breakdown'),
-                ('manage_library', 'Can manage standard cost breakdown library'),
-            ) 
-  
-    def __init__(self, *args, **kwargs):  
-        super(CostBreakdown, self).__init__(*args, **kwargs)
-        self.mb_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
-        self.gb_list = tuple(ManufacturingBreakdown.objects.filter(costbreakdown_id=self.pk))
-       
-    def material_cost(self, *args, **kwargs):
-        """
-        Returns total material cost
-        """
-
-        result = 0
-        for mb in self.mb_list:
-            result += mb.materialtotal()
-
-        return result
-
-    def manufacturing_cost(self, *args, **kwargs): 
-        """
-        Returns total manufacturing cost
-        """
-        result = 0
-        for gb in self.gb_list:
-            result += gb.manufacturingtotal()
-
-        return result
-    
-    def production_cost(self, *args, **kwargs): 
-        """
-        Returns the production cost of the breakdown
-        """
-        return self.material_cost() + self.manufacturing_cost()
-
-    def overhead_cost(self, *args, **kwargs):
-        """
-        Returns the overhead cost
-        """
-        return round((self.overhead / 100) * self.production_cost(), 2)
-
-    def special_cost(self, *args, **kwargs): 
-        """
-        Returns the special cost of the breakdown
-        """
-        return round(self.packaging + self.freight + self.customs + self.tooling, 2)  
-
-    def profit_cost(self, *args, **kwargs):
-        """
-        Returns the profit
-        """
-        return round((self.profit / 100) * self.production_cost(), 2)
-
-    def indirect_cost(self, *args, **kwargs):
-        """
-        Returns the indirect cost (overhead + specail + profit) of the breakdown
-        """
-        return self.overhead_cost() + self.special_cost() + self.profit_cost()
-
-    def total_cost(self, *args, **kwargs):
-        """
-        Returns the total cost of the cost breakdown 
-        """
-        return self.production_cost() + self.indirect_cost()
-    #???
-    def get_absolute_url(self):
-        """
-        Returns a particular instance of costbreakdown
-        """
-        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': str(self.pk)})
-
-    def __str__(self):
-        """
-        Returns string repsentation of the CostBreakdown model
-        """
-        return self.title
-
-class MaterialBreakdown(models.Model):
-    """
-    Model representing a material breakdown
+    Model representing a special cost breakdown
     """
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
-    title = models.CharField(max_length=120, help_text='Material Title') # material title
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE) 
-    quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1.00)
-    price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    scrap = models.DecimalField('Scrap (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 1 for 1% Scrap')
-    overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 3 for 3% Overhead')
-
-    class Meta:
-       verbose_name = 'material breakdown'
-       verbose_name_plural = 'material breakdowns'
-       ordering = ['costbreakdown', 'title', '-price'] 
-
-    def material_net_cost(self):
-        """
-        Returns a single material net cost
-        """
-        return round(self.quantity * self.price, 2)  
     
-    def material_scrap_cost(self):
-        """
-        Returns a single material scrap cost
-        """
-        return round(self.material_net_cost * self.scrap / 100, 2) 
+    packaging_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    freight_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    duty_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    tooling_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    tooling_quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1.00)
+    manufacturing_parts = models.DecimalField(max_digits=12, decimal_places=2, default=1.00)
+    
+    class Meta:
+       verbose_name = '其它成本明细'
+       verbose_name_plural = '其它成本明细'
+       ordering = ['costbreakdown'] 
 
-    def material_overhead_cost(self):
+    def tooling_cost(self):
         """
-        Returns a single material overhead cost
+        Returns a tooling cost
         """
-        return round((self.material_net_cost + self.material_scrap_cost) * self.overhead / 100, 2) 
+        return round(self.tooling_price * self.tooling_quantity / self.manufacturing_parts, 2)  
 
-    def materialtotal(self):
+    def special_total_cost(self):
         """
-        Returns subtotal of a single material cost
+        Returns total of special cost
         """
-        return round(self.material_net_cost + self.material_scrap_cost + self.material_overhead_cost, 2)
-
-    def get_absolute_url(self):
-        """
-        Returns a particular instance of materialbreakdown
-        """
-        return reverse('breakdowns:materialbreakdown_detail', kwargs={'pk': str(self.pk)})
-
-    def __str__(self):
-        """
-        Returns string repsentation of the MaterialBreakdown model
-        """
-        return '{} Material Breakdown'.format(self.title)
-
+        return round(self.packaging_cost + self.freight_cost + self.duty_cost + self.tooling_cost(), 2)
+'''
 class ManufacturingBreakdown(models.Model):
     """
     Model representing a manufacturing breakdown

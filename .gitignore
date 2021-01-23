@@ -1,4 +1,4 @@
 __pycache__
 myvenv
 *.swp
-*.sqlite3
+#*.sqlite3
