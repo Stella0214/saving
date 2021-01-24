@@ -12,20 +12,19 @@ class CostBreakdown(models.Model):
     """
     provide total cost
     """
-    
-    company = models.CharField(max_length=64, help_text='公司') 
-    country = models.CharField(max_length=64, help_text='国家') 
-    region = models.CharField(max_length=64, help_text='地区') 
-    industry = models.CharField(max_length=64, help_text='行业') 
-    description = models.CharField(max_length=64, unique=True, help_text='名称') # 不可重复
-    part_number = models.CharField(max_length=120, help_text='型号') 
+    company = models.CharField(max_length=64, verbose_name='公司') # verbose_name为字段设置一个人类可读，更加直观的别名
+    country = models.CharField(max_length=64, verbose_name='国家') 
+    region = models.CharField(max_length=64, verbose_name='地区') 
+    industry = models.CharField(max_length=64, verbose_name='行业') 
+    description = models.CharField(max_length=64, unique=True, verbose_name='名称') # unique设为True时，在整个数据表内该字段的数据不可重复。
+    part_number = models.CharField(max_length=120, verbose_name='型号') 
     
     # material_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    manufacturing_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    manufacturing_cost = models.DecimalField('制造成本', max_digits=12, null=True, blank=True, decimal_places=2, default=0.00) # 字段的默认值，可以是值或者一个可调用对象。
     # overhead_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     # special_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     # profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    profit_rate = models.DecimalField('Profit_Rate (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 5 for 5% Profit_Rate')
+    profit_rate = models.DecimalField('利润率（%）', null=True, blank=True, max_digits=6, decimal_places=2, help_text='例如：输入5就是5%的利润率') # help_text: 额外显示在表单部件上的帮助文本
     
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

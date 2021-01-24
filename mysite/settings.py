@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     # Extensions - installed with pip / requirements.txt
     'django_extensions', 
-    'crispy_forms',
+    'crispy_forms', # 美化表单form
     'rest_framework',
     'home',
     'breakdowns',
